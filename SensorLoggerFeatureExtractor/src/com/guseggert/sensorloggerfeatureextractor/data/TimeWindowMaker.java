@@ -25,18 +25,15 @@ public class TimeWindowMaker extends Observable {
 	
 	public void run() {
 		DataReader dr = new DataReader(FILENAME);
-		DataInstance instance;
 		while (dr.hasNext())
 			addPoint(dr.nextLine());
 	}
 	
 	private void addPoint(DataInstance instance) {
 		if (mLastTimeWindow == null || boundaryReached(instance.Time))
-			newTimeWindow(instance.Time);
+			newTimeWindow(instance);
 		
-		
-			
-		
+		notifyObservers(instance);		
 	}
 	
 	private boolean boundaryReached(long time) {
@@ -44,8 +41,8 @@ public class TimeWindowMaker extends Observable {
 		return interval >= TIMEWINDOWLENGTH * TIMEWINDOWOVERLAP;
 	}
 	
-	private void newTimeWindow(long time) {
-		TimeWindow tw = new TimeWindow(time, TIMEWINDOWLENGTH);
+	private void newTimeWindow(DataInstance instance) {
+		TimeWindow tw = new TimeWindow(instance, TIMEWINDOWLENGTH);
 		addObserver(tw);
 		mLastTimeWindow = tw;
 	}

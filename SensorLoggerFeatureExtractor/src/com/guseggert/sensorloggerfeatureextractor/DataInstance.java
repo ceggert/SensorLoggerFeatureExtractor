@@ -5,12 +5,12 @@ import java.util.HashMap;
 // represents a row in the dataset
 public class DataInstance {
 	public HashMap<SensorID, Float> Values;
-	public String Class;
+	public String Activity;
 	public long Time;
 	
-	public DataInstance(HashMap<SensorID, Float> values, String cls, long time) {
+	public DataInstance(HashMap<SensorID, Float> values, String activity, long time) {
 		Values = values;
-		Class = cls;
+		Activity = activity;
 		Time = time;
 	}
 }
