@@ -4,6 +4,7 @@ import java.util.Observable;
 
 import com.guseggert.sensorloggerfeatureextractor.DataInstance;
 import com.guseggert.sensorloggerfeatureextractor.DataReader;
+import com.guseggert.sensorloggerfeatureextractor.feature.FeatureSet;
 
 
 
@@ -17,14 +18,16 @@ public class TimeWindowMaker extends Observable {
 	private final long TIMEWINDOWLENGTH = 5000000000l; // nanoseconds
 	private final float TIMEWINDOWOVERLAP = 0.5f; // overlap of time windows
 	private TimeWindow mLastTimeWindow = null;
-	private final String FILENAME = "1366122332244.csv";
+	private final String INPUTFILENAME = "1366122332244.csv";
+	private final String OUTPUTFILENAME = INPUTFILENAME + "_features.csv";
+	//private DataWriter mDataWriter = new DataWriter()
 	
 	public TimeWindowMaker() {
 		
 	}
 	
 	public void run() {
-		DataReader dr = new DataReader(FILENAME);
+		DataReader dr = new DataReader(INPUTFILENAME);
 		while (dr.hasNext())
 			addPoint(dr.nextLine());
 	}
@@ -42,9 +45,15 @@ public class TimeWindowMaker extends Observable {
 	}
 	
 	private void newTimeWindow(DataInstance instance) {
-		TimeWindow tw = new TimeWindow(instance, TIMEWINDOWLENGTH);
+		TimeWindow tw = new TimeWindow(instance, TIMEWINDOWLENGTH, this);
 		addObserver(tw);
 		mLastTimeWindow = tw;
+	}
+	
+	public void onTimeWindowFull(TimeWindow timeWindow) {
+		deleteObserver(timeWindow);
+		FeatureSet featureSet = new FeatureSet(timeWindow);
+		// write feature set to file
 	}
 
 }

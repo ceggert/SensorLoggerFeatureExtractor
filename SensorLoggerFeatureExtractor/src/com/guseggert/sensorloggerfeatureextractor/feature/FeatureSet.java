@@ -8,7 +8,7 @@ import com.guseggert.sensorloggerfeatureextractor.data.TimeSeries;
 import com.guseggert.sensorloggerfeatureextractor.data.TimeWindow;
 import com.guseggert.sensorloggerfeatureextractor.data.TimeWindowMaker;
 
-public class FeatureSet extends HashMap<SensorID, HashMap<FeatureID, Float>> implements Runnable {
+public class FeatureSet extends HashMap<SensorID, HashMap<FeatureID, Float>>{
 	private static final long serialVersionUID = 2504830754416754646L;
 	private TimeWindow mTimeWindow;
 
@@ -51,10 +51,5 @@ public class FeatureSet extends HashMap<SensorID, HashMap<FeatureID, Float>> imp
 
 	public TimeWindow getTimeWindow() {
 		return mTimeWindow;
-	}
-
-	@Override
-	public void run() {
-		computeFeatures();
 	}
 }

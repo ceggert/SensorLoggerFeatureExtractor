@@ -15,17 +15,18 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 	private long mLength;
 	FeatureSet mFeatureSet;
 	private String mActivity;
+	private TimeWindowMaker mTimeWindowMaker;
 	
 	// tracks how often we see each activity, since we use the most common activity
 	// as the time window's activity:
 	private HashMap<String, Integer> mActivityCount = new HashMap<String, Integer>();
 
-	public TimeWindow(DataInstance instance, long length) {
+	// need to have an instance to make a new time window
+	public TimeWindow(DataInstance instance, long length, TimeWindowMaker twm) {
 		mLength = length;
 		mStartTime = instance.Time;
-		for (SensorID sensorID : instance.Values.keySet()) {
-			// add each value to a new time series
-		}
+		mTimeWindowMaker = twm;
+		addInstance(instance);
 	}
 
 	public long getStartTime() {
@@ -38,13 +39,23 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 	}
 	
 	private void addInstance(DataInstance instance) {
-		// for each sensor, add the point
-		for (SensorID sensorID : instance.Values.keySet()) {
-			DataPoint dp = new DataPoint(instance.Values.get(sensorID), 
-			this.get(sensorID).add(new DataPoint(instance.Values.get))
+		// check if the time window is full
+		if (willFit(instance.Time)) { 
+			
+			// for each sensor, add a point to the respective time series
+			for (Map.Entry<SensorID, Float> entry : instance.Values.entrySet()) {
+				SensorID sensorID = entry.getKey();
+				float value = entry.getValue();
+				
+				DataPoint dp = new DataPoint(value, sensorID, instance.Time);
+				this.get(sensorID).add(dp);
+			}
+	
+			udpateActivityCount(instance.Activity);
+			updateActivity();
+		} else {
+			mTimeWindowMaker.onTimeWindowFull(this);
 		}
-		udpateActivityCount(instance.Activity);
-		updateActivity();
 	}
 	
 	private void udpateActivityCount(String str) {
@@ -60,5 +71,11 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 				maxEntry = entry;
 		}
 		mActivity = maxEntry.getKey();
+	}
+	
+	// given the time of a new instance, checks if it will fit in this time window
+	private boolean willFit(long time) {
+		long difference = time - mStartTime;
+		return difference >= mLength;
 	}
 }
