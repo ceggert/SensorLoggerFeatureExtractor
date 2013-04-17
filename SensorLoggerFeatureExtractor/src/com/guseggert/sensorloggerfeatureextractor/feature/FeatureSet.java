@@ -16,6 +16,7 @@ public class FeatureSet extends HashMap<SensorID, HashMap<FeatureID, Float>>{
 	public FeatureSet(TimeWindow timeWindow) {
 		mTimeWindow = timeWindow;
 		computeFeatures();
+		logContents();
 	}
 
 	private void computeFeatures() {
@@ -26,13 +27,9 @@ public class FeatureSet extends HashMap<SensorID, HashMap<FeatureID, Float>>{
 			this.put(sensorID, new HashMap<FeatureID, Float>());
 
 			computeStatisticalFeatures(timeSeries, sensorID);
-			sendMessage();
+			computeStructuralFeatures(timeSeries, sensorID);
+			computeTransientFeatures(timeSeries, sensorID);
 		}
-	}
-
-	private void sendMessage() {
-//		Message msg = Message.obtain(mHandler, TimeWindowMaker.MSG_FEATURE_EXTRACTION_COMPLETE, this);
-//		msg.sendToTarget();
 	}
 
 	private void computeStatisticalFeatures(TimeSeries timeSeries, SensorID sensorID) {
@@ -45,11 +42,46 @@ public class FeatureSet extends HashMap<SensorID, HashMap<FeatureID, Float>>{
 		this.get(sensorID).put(FeatureID.ENERGY, (float)sfe.computeEnergy());
 	}
 
-	private void computeStructuralFeatures() {
-		//StructuralFeatureExtractor sfe = new StructuralFeatureExtractor(timeSeries);
+	private void computeStructuralFeatures(TimeSeries timeSeries, SensorID sensorID) {
+		StructuralFeatureExtractor sfe = new StructuralFeatureExtractor(timeSeries);
+		double[] coeffs2 = sfe.computeLeastSquares(2);
+		double[] coeffs3 = sfe.computeLeastSquares(3);
+		double[] coeffs4 = sfe.computeLeastSquares(4);
+		this.get(sensorID).put(FeatureID.POLYFIT_1_0, (float)coeffs2[0]);
+		this.get(sensorID).put(FeatureID.POLYFIT_1_1, (float)coeffs2[1]);
+		this.get(sensorID).put(FeatureID.POLYFIT_2_0, (float)coeffs3[0]);
+		this.get(sensorID).put(FeatureID.POLYFIT_2_1, (float)coeffs3[1]);
+		this.get(sensorID).put(FeatureID.POLYFIT_2_2, (float)coeffs3[2]);
+		this.get(sensorID).put(FeatureID.POLYFIT_3_0, (float)coeffs4[0]);
+		this.get(sensorID).put(FeatureID.POLYFIT_3_1, (float)coeffs4[1]);
+		this.get(sensorID).put(FeatureID.POLYFIT_3_2, (float)coeffs4[2]);
+		this.get(sensorID).put(FeatureID.POLYFIT_3_3, (float)coeffs4[3]);
 	}
 
+	private void computeTransientFeatures(TimeSeries timeSeries, SensorID sensorID) {
+		TransientFeatureExtractor tfe = new TransientFeatureExtractor(timeSeries);
+		double mag = tfe.computeMagnitude();
+		double trend = tfe.computeTrend();
+		this.get(sensorID).put(FeatureID.MAG, (float)mag);
+		this.get(sensorID).put(FeatureID.TREND, (float)trend);
+		this.get(sensorID).put(FeatureID.SIGNED_MAG, (float)(trend*mag));
+	}
+	
 	public TimeWindow getTimeWindow() {
 		return mTimeWindow;
+	}
+	
+	public void logContents() {
+		System.out.println("Logging contents....");
+		for(Map.Entry<SensorID, HashMap<FeatureID, Float>> entry : this.entrySet()) {
+			SensorID sensorID = entry.getKey();
+			HashMap<FeatureID, Float> hm = entry.getValue();
+			for (Map.Entry<FeatureID, Float> entry1 : hm.entrySet()) {
+				FeatureID featureID = entry1.getKey();
+				float value = entry1.getValue();
+				System.out.println(featureID + ": " + value + " Sensor: " + 
+						sensorID + " Time: " + this.getTimeWindow().getStartTime());
+			}
+		}
 	}
 }

@@ -10,7 +10,7 @@ import com.google.common.collect.Lists;
 
 public class DataReader {
 	Scanner mScanner;
-	ArrayList<SensorID> mSensorIDs;
+	ArrayList<SensorID> mSensorIDs = new ArrayList<SensorID>();
 	
 	public DataReader (String fileName) {
 		try { mScanner = new Scanner(new File(fileName)); } 

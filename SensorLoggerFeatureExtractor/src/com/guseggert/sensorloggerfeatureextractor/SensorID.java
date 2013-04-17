@@ -10,7 +10,7 @@ public enum SensorID {
 	
 	public static SensorID parse(String string) {
 		for (SensorID sensorID : SensorID.values()) {
-			if (sensorID.toString() == string)
+			if (sensorID.toString().equals(string))
 				return sensorID;
 		}
 		return null;

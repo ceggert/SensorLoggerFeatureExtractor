@@ -26,11 +26,25 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 		mLength = length;
 		mStartTime = instance.Time;
 		mTimeWindowMaker = twm;
+		initTable(instance);
+		initActivityCount();
 		addInstance(instance);
 	}
 
 	public long getStartTime() {
 		return mStartTime;
+	}
+	
+	// initialize the hash table based on an instance
+	private void initTable(DataInstance instance) {
+		for (SensorID sensorID : instance.Values.keySet()) {
+			this.put(sensorID, new TimeSeries());
+		}
+	}
+	
+	// set initial activity counts to zero
+	private void initActivityCount() {
+		
 	}
 
 	@Override
@@ -50,16 +64,20 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 				DataPoint dp = new DataPoint(value, sensorID, instance.Time);
 				this.get(sensorID).add(dp);
 			}
-	
+			
 			udpateActivityCount(instance.Activity);
 			updateActivity();
 		} else {
+//			System.out.println("tw full: " + mStartTime);
 			mTimeWindowMaker.onTimeWindowFull(this);
 		}
 	}
 	
 	private void udpateActivityCount(String str) {
-		mActivityCount.put(str, mActivityCount.get(str) + 1);
+		if (mActivityCount.containsKey(str)) 
+			mActivityCount.put(str, mActivityCount.get(str) + 1);
+		else
+			mActivityCount.put(str, 0);
 	}
 	
 	// this is not very efficient, because we count the max every time we add a new instance,
@@ -75,7 +93,7 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 	
 	// given the time of a new instance, checks if it will fit in this time window
 	private boolean willFit(long time) {
-		long difference = time - mStartTime;
-		return difference >= mLength;
+		long curLength = time - mStartTime;
+		return curLength <= mLength;
 	}
 }

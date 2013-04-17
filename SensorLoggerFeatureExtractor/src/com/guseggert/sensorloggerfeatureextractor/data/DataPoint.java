@@ -21,6 +21,10 @@ public class DataPoint implements Comparable<DataPoint> {
 		return mValue;
 	}
 
+	public long getTime() {
+		return getTimestamp();
+	}
+	
 	public SensorID getSensorID() {
 		return mSensorID;
 	}
