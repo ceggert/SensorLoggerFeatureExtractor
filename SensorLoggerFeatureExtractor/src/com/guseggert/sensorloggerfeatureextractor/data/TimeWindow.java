@@ -62,7 +62,6 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 			udpateActivityCount(instance.Activity);
 			updateActivity();
 		} else {
-//			System.out.println("tw full: " + mStartTime);
 			mTimeWindowMaker.onTimeWindowFull(this);
 		}
 	}

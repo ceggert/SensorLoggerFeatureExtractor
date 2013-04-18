@@ -37,7 +37,6 @@ public class DataWriter {
 			}
 		}
 		line.add("CLASS");
-		//System.out.println(Joiner.on(",").join(line));
 		writeLine(Joiner.on(",").join(line));
 	}
 	
@@ -70,6 +69,5 @@ public class DataWriter {
 		}
 		line.add(featureSet.getActivity());
 		writeLine(Joiner.on(",").join(line));
-		System.out.println(Joiner.on(",").join(line));
 	}
 }

@@ -44,14 +44,14 @@ public class TimeWindowMaker extends Observable {
 	}
 	
 	private void newTimeWindow(DataInstance instance) {
-		System.out.println("New time window: " + instance.Time);
+		//System.out.println("New time window: " + instance.Time);
 		TimeWindow tw = new TimeWindow(instance, TIMEWINDOWLENGTH, this);
 		addObserver(tw);
 		mLastTimeWindow = tw;
 	}
 	
 	public void onTimeWindowFull(TimeWindow timeWindow) {
-		System.out.println("Time window full: " + timeWindow.getStartTime());
+		//System.out.println("Time window full: " + timeWindow.getStartTime());
 		deleteObserver(timeWindow);
 		FeatureSet featureSet = new FeatureSet(timeWindow);
 		mDataWriter.writeLine(featureSet);

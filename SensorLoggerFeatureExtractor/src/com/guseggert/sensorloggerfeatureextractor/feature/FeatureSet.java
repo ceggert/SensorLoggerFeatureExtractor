@@ -75,7 +75,6 @@ public class FeatureSet extends HashMap<SensorID, HashMap<FeatureID, Float>>{
 	}
 	
 	public void logContents() {
-		System.out.println("Logging contents....");
 		for(Map.Entry<SensorID, HashMap<FeatureID, Float>> entry : this.entrySet()) {
 			SensorID sensorID = entry.getKey();
 			HashMap<FeatureID, Float> hm = entry.getValue();
