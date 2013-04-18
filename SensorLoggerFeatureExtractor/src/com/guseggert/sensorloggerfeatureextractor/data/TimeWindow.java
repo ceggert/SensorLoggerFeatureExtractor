@@ -27,7 +27,6 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 		mStartTime = instance.Time;
 		mTimeWindowMaker = twm;
 		initTable(instance);
-		initActivityCount();
 		addInstance(instance);
 	}
 
@@ -40,11 +39,6 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 		for (SensorID sensorID : instance.Values.keySet()) {
 			this.put(sensorID, new TimeSeries());
 		}
-	}
-	
-	// set initial activity counts to zero
-	private void initActivityCount() {
-		
 	}
 
 	@Override
@@ -77,7 +71,7 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 		if (mActivityCount.containsKey(str)) 
 			mActivityCount.put(str, mActivityCount.get(str) + 1);
 		else
-			mActivityCount.put(str, 0);
+			mActivityCount.put(str, 1);
 	}
 	
 	// this is not very efficient, because we count the max every time we add a new instance,
@@ -95,5 +89,9 @@ public class TimeWindow extends HashMap<SensorID, TimeSeries> implements Observe
 	private boolean willFit(long time) {
 		long curLength = time - mStartTime;
 		return curLength <= mLength;
+	}
+	
+	public String getActivity() {
+		return mActivity;
 	}
 }

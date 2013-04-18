@@ -4,6 +4,7 @@ import java.util.Observable;
 
 import com.guseggert.sensorloggerfeatureextractor.DataInstance;
 import com.guseggert.sensorloggerfeatureextractor.DataReader;
+import com.guseggert.sensorloggerfeatureextractor.DataWriter;
 import com.guseggert.sensorloggerfeatureextractor.feature.FeatureSet;
 
 
@@ -20,7 +21,7 @@ public class TimeWindowMaker extends Observable {
 	private TimeWindow mLastTimeWindow = null;
 	private final String INPUTFILENAME = "1366254022182.csv";
 	private final String OUTPUTFILENAME = INPUTFILENAME + "_features.csv";
-//	private DataWriter mDataWriter = new DataWriter(OUTPUTFILENAME);
+	private DataWriter mDataWriter = new DataWriter(OUTPUTFILENAME);
 	
 	public TimeWindowMaker() {
 		DataReader dr = new DataReader(INPUTFILENAME);
@@ -51,7 +52,7 @@ public class TimeWindowMaker extends Observable {
 		System.out.println("Time window full: " + timeWindow.getStartTime());
 		deleteObserver(timeWindow);
 		FeatureSet featureSet = new FeatureSet(timeWindow);
-		
+		mDataWriter.writeLine(featureSet);
 		// write feature set to file
 	}
 
