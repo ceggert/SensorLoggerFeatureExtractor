@@ -18,7 +18,7 @@ public class TimeWindowMaker extends Observable {
 	private final long TIMEWINDOWLENGTH = 5000000000l; // nanoseconds
 	private final float TIMEWINDOWOVERLAP = 0.5f; // overlap of time windows
 	private TimeWindow mLastTimeWindow = null;
-	private final String INPUTFILENAME = "1366122332244.csv";
+	private final String INPUTFILENAME = "1366254022182.csv";
 	private final String OUTPUTFILENAME = INPUTFILENAME + "_features.csv";
 //	private DataWriter mDataWriter = new DataWriter(OUTPUTFILENAME);
 	
