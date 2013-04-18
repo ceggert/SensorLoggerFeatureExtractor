@@ -55,7 +55,5 @@ public class TimeWindowMaker extends Observable {
 		deleteObserver(timeWindow);
 		FeatureSet featureSet = new FeatureSet(timeWindow);
 		mDataWriter.writeLine(featureSet);
-		// write feature set to file
 	}
-
 }
