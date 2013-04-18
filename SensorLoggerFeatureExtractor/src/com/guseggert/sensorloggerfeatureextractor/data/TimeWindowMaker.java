@@ -19,12 +19,14 @@ public class TimeWindowMaker extends Observable {
 	private final long TIMEWINDOWLENGTH = 5000000000l; // nanoseconds
 	private final float TIMEWINDOWOVERLAP = 0.5f; // overlap of time windows
 	private TimeWindow mLastTimeWindow = null;
-	private final String INPUTFILENAME = "1366254022182.csv";
-	private final String OUTPUTFILENAME = INPUTFILENAME + "_features.csv";
+	private final String INPUTFILENAME = "2013-04-18--13-35-56";
+	private final String EXTENSION = ".csv";
+	private final String FULLINPUTFILENAME = INPUTFILENAME + EXTENSION;
+	private final String OUTPUTFILENAME = INPUTFILENAME + "_features" + EXTENSION;
 	private DataWriter mDataWriter = new DataWriter(OUTPUTFILENAME);
 	
 	public TimeWindowMaker() {
-		DataReader dr = new DataReader(INPUTFILENAME);
+		DataReader dr = new DataReader(FULLINPUTFILENAME);
 		while (dr.hasNext())
 			addPoint(dr.nextLine());
 	}
